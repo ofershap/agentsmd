@@ -1,0 +1,40 @@
+name: agentsmd
+description: >-
+  CI gate that fails when your AGENTS.md starts lying: verifies referenced
+  paths, scripts and versions still exist. Static checks only; never executes
+  repository content.
+author: ofershap
+branding:
+  icon: check-circle
+  color: green
+inputs:
+  root:
+    description: Repository root to check
+    required: false
+    default: .
+  file:
+    description: Instruction file, relative to root
+    required: false
+    default: AGENTS.md
+  format:
+    description: 'Output format: text or sarif'
+    required: false
+    default: text
+  budget:
+    description: Token budget for the instruction file (estimated as bytes/4)
+    required: false
+    default: '2500'
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '1.26'
+    - name: Run agentsmd
+      shell: bash
+      run: |
+        go run github.com/ofershap/agentsmd@v0.1.0 check \
+          -root "${{ inputs.root }}" \
+          -file "${{ inputs.file }}" \
+          -format "${{ inputs.format }}" \
+          -budget "${{ inputs.budget }}"

@@ -1,0 +1,22 @@
+# agentsmd
+
+agentsmd is a CI gate that fails when an AGENTS.md (or CLAUDE.md, .cursorrules,
+etc.) starts lying: it statically verifies that every referenced path, script
+and version still exists in the repository.
+
+- What it checks: drift/missing-path, drift/missing-script,
+  drift/version-mismatch, bloat/token-budget, bloat/readme-duplication.
+- It never executes repository content. Verification is static only.
+- It does not generate or rewrite instruction files; it detects drift.
+- Output: human-readable text or SARIF 2.1.0. Exit 1 on any error-level finding.
+
+## Usage
+
+- GitHub Action: `- uses: ofershap/agentsmd@v0.1.0`
+- CLI: `go install github.com/ofershap/agentsmd@v0.1.0 && agentsmd check`
+- Flags: -root, -file, -format (text|sarif), -budget (token budget, bytes/4)
+
+## Links
+
+- Repository: https://github.com/ofershap/agentsmd
+- License: MIT
