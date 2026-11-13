@@ -1,0 +1,4 @@
+/agentsmd
+*.test
+*.out
+/dist/
