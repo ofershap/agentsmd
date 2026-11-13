@@ -1,26 +1,18 @@
 # agentsmd
 
-agentsmd is a CI gate that fails when an AGENTS.md (or CLAUDE.md, .cursorrules,
-etc.) starts lying: it statically verifies that every referenced path, script
-and version still exists in the repository.
-
-- What it checks: drift/missing-path (backticked paths and relative markdown
-  links), drift/missing-script (make/npm/pnpm/yarn/bun invocations),
-  drift/version-mismatch (Go directive and Node engines only, warning),
-  bloat/token-budget, bloat/readme-duplication (warning).
-- What it does not see: dynamically built paths, commands outside backticks,
-  versions other than Go/Node.
-- It never executes repository content. Verification is static only.
-- It does not generate or rewrite instruction files; it detects drift.
-- Output: human-readable text or SARIF 2.1.0. Exit 1 on any error-level finding.
+> CI gate that fails when your AGENTS.md starts lying. Statically verifies
+> the references an AGENTS.md makes: backticked file paths, relative
+> markdown links, make/npm/pnpm/yarn/bun script invocations, and stated Go
+> and Node versions against go.mod and package.json. No LLM calls, no code
+> execution.
 
 ## Usage
 
-- GitHub Action: `- uses: ofershap/agentsmd@v0.1.0`
-- CLI: `go install github.com/ofershap/agentsmd@v0.1.0 && agentsmd check`
-- Flags: -root, -file, -format (text|sarif), -budget (token budget, bytes/4)
+- GitHub Actions: `- uses: ofershap/agentsmd@v0.1.0` is the whole workflow step.
+- Local/any CI: run the agentsmd binary; `agentsmd check` reports drift with fix hints.
+- `-format sarif` emits SARIF for GitHub code scanning annotations.
+- Exit 1 on drift so the build goes red the day instructions stop matching the repo.
 
-## Links
+## Docs
 
-- Repository: https://github.com/ofershap/agentsmd
-- License: MIT
+- [README](https://github.com/ofershap/agentsmd#readme): what it checks, usage, limits
