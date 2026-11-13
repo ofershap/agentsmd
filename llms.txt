@@ -4,8 +4,12 @@ agentsmd is a CI gate that fails when an AGENTS.md (or CLAUDE.md, .cursorrules,
 etc.) starts lying: it statically verifies that every referenced path, script
 and version still exists in the repository.
 
-- What it checks: drift/missing-path, drift/missing-script,
-  drift/version-mismatch, bloat/token-budget, bloat/readme-duplication.
+- What it checks: drift/missing-path (backticked paths and relative markdown
+  links), drift/missing-script (make/npm/pnpm/yarn/bun invocations),
+  drift/version-mismatch (Go directive and Node engines only, warning),
+  bloat/token-budget, bloat/readme-duplication (warning).
+- What it does not see: dynamically built paths, commands outside backticks,
+  versions other than Go/Node.
 - It never executes repository content. Verification is static only.
 - It does not generate or rewrite instruction files; it detects drift.
 - Output: human-readable text or SARIF 2.1.0. Exit 1 on any error-level finding.

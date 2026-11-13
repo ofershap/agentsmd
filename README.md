@@ -4,7 +4,7 @@
 
 AGENTS.md files rot. Code moves, scripts get renamed, versions bump, and the instruction file keeps pointing agents at things that no longer exist. The agent doesn't complain; it hallucinates around the lie and burns your tokens doing it.
 
-agentsmd is a CI gate that fails the day the drift starts. It statically verifies that every path, script and version your AGENTS.md references still exists in the repo. No LLM calls, no code execution - just diff-fast static checks that turn silent drift into a red build.
+agentsmd is a CI gate that fails the day the drift starts. It statically verifies the references your AGENTS.md makes: backticked file paths, relative markdown links, `make` / `npm run` / `pnpm` / `yarn` / `bun` script invocations, and stated Go and Node versions against go.mod and package.json. No LLM calls, no code execution - just diff-fast static checks that turn silent drift into a red build.
 
 ```text
 $ agentsmd check
@@ -72,7 +72,10 @@ It can, but only after someone notices. agentsmd makes the breakage a build fail
 Yes - pass `-file CLAUDE.md` (or any path). The checks are format-agnostic: they verify references, not the filename.
 
 **What about false positives?**
-Only unambiguous references are checked: paths with a directory separator or a known file extension, relative markdown links, and script invocations in backticks. Plain prose is never flagged. Version mismatches and bloat are warnings, not errors.
+Error-level rules only flag unambiguous references: paths with a directory separator or a known file extension, relative markdown links, and script invocations in backticks. Plain prose is never flagged. Version mismatches and bloat are warnings, not errors.
+
+**What can it miss?**
+References it cannot see: paths built dynamically in prose ("the dist folder"), commands outside backticks, scripts invoked through wrappers, and versions other than Go and Node. It verifies that referenced things exist, not that the instructions are good.
 
 **How is the token count estimated?**
 As bytes divided by 4, the standard rough estimate for English text. It's stable enough to gate on trend, not exact enough to argue about.
